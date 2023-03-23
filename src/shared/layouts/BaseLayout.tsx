@@ -11,14 +11,14 @@ import { useDrawerContext } from '../contexts';
 
 interface IBaseLayoutProps {
   title: string;
-  listTool: ReactNode;
-  children: ReactNode;
+  toolbar: ReactNode;
+  children?: ReactNode;
 }
 
 export const BaseLayout: React.FC<IBaseLayoutProps> = ({
   children,
   title,
-  listTool,
+  toolbar,
 }) => {
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.down('sm'));
@@ -27,11 +27,11 @@ export const BaseLayout: React.FC<IBaseLayoutProps> = ({
   const { toggleDrawerOpen } = useDrawerContext();
 
   return (
-    <Box height="100%" display="flex" flexDirection="column" gap={1}>
+    <Box height='100%' display='flex' flexDirection='column' gap={1}>
       <Box
         padding={1}
-        display="flex"
-        alignItems="center"
+        display='flex'
+        alignItems='center'
         height={theme.spacing(smDown ? 6 : mdDown ? 8 : 12)}
         gap={1}
       >
@@ -43,17 +43,17 @@ export const BaseLayout: React.FC<IBaseLayoutProps> = ({
 
         <Typography
           variant={smDown ? 'h5' : mdDown ? 'h4' : 'h3'}
-          whiteSpace="nowrap"
-          overflow="hidden"
-          textOverflow="ellipses"
+          whiteSpace='nowrap'
+          overflow='hidden'
+          textOverflow='ellipses'
         >
           {title}
         </Typography>
       </Box>
 
-      {listTool && <Box>{listTool}</Box>}
+      {toolbar && <Box>{toolbar}</Box>}
 
-      <Box flex={1} overflow="auto">
+      <Box flex={1} overflow='auto'>
         {children}
       </Box>
     </Box>
