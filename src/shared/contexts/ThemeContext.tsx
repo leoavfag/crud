@@ -3,19 +3,21 @@ import { Box } from '@mui/system';
 import { createContext, ReactNode, useContext } from 'react';
 import { DarkTheme } from '../themes';
 
-interface IThemeContextData {
+interface IThemeContextProps {
   children: ReactNode;
 }
 
-const ThemeContext = createContext({} as IThemeContextData);
+const ThemeContext = createContext({});
 
 export const useAppThemeContext = () => {
   return useContext(ThemeContext);
 };
 
-export const AppThemeProvider: React.FC<IThemeContextData> = ({ children }) => {
+export const AppThemeProvider: React.FC<IThemeContextProps> = ({
+  children,
+}) => {
   return (
-    <ThemeContext.Provider value={{ children }}>
+    <ThemeContext.Provider value={{}}>
       <ThemeProvider theme={DarkTheme}>
         <Box
           width="100vw"
