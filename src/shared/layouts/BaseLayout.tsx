@@ -11,14 +11,14 @@ import { useDrawerContext } from '../contexts';
 
 interface IBaseLayoutProps {
   title: string;
-  toolbar: ReactNode;
+  listTool: ReactNode;
   children: ReactNode;
 }
 
 export const BaseLayout: React.FC<IBaseLayoutProps> = ({
   children,
   title,
-  toolbar,
+  listTool,
 }) => {
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.down('sm'));
@@ -51,7 +51,7 @@ export const BaseLayout: React.FC<IBaseLayoutProps> = ({
         </Typography>
       </Box>
 
-      {toolbar && <Box>{toolbar}</Box>}
+      {listTool && <Box>{listTool}</Box>}
 
       <Box flex={1} overflow="auto">
         {children}
