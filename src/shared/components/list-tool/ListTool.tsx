@@ -1,5 +1,6 @@
 import { Button, Icon, Paper, TextField, useTheme } from '@mui/material';
 import { Box } from '@mui/system';
+import { Environment } from '../../environment';
 
 interface IListToolProps {
   searchText?: string;
@@ -25,25 +26,25 @@ export const ListTool: React.FC<IListToolProps> = ({
       marginX={1}
       padding={1}
       paddingX={2}
-      display="flex"
-      alignItems="center"
+      display='flex'
+      alignItems='center'
       height={theme.spacing(5)}
       component={Paper}
     >
       {showSearchInput && (
         <TextField
-          size="small"
-          placeholder="Pesquisar..."
+          size='small'
+          placeholder={Environment.SEARCH_INPUT}
           value={searchText}
           onChange={(e) => onSearchTextChange?.(e.target.value)}
         />
       )}
 
-      <Box flex={1} display="flex" justifyContent="end">
+      <Box flex={1} display='flex' justifyContent='end'>
         {showNewButton && (
           <Button
-            variant="contained"
-            color="primary"
+            variant='contained'
+            color='primary'
             disableElevation
             endIcon={<Icon>add</Icon>}
             onClick={onNewButtonClick}
