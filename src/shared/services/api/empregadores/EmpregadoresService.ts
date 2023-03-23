@@ -56,7 +56,7 @@ const getAll = async (
     if (data) {
       return {
         data,
-        totalCount: Number(headers['x-total-count']) || Environment.LINE_LIMIT,
+        totalCount: Number(headers['x-total-count']) ?? Environment.LINE_LIMIT,
       };
     }
     return new Error('Erro ao listar os registros.');
