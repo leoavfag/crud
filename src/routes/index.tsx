@@ -1,6 +1,10 @@
 import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Dashboard, ListagemDeEmpregadores } from '../pages';
+import {
+  Dashboard,
+  DetalhesDeEmpregador,
+  ListagemDeEmpregadores,
+} from '../pages';
 import { useDrawerContext } from '../shared/contexts';
 
 export const AppRoutes = () => {
@@ -26,6 +30,10 @@ export const AppRoutes = () => {
       <Route path='/home' element={<Dashboard />} />
 
       <Route path='/empregadores' element={<ListagemDeEmpregadores />} />
+      <Route
+        path='/empregadores/detalhes/:id'
+        element={<DetalhesDeEmpregador />}
+      />
 
       <Route path='*' element={<Navigate to='/home' />} />
     </Routes>

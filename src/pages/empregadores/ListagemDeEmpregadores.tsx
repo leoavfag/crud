@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
+  Icon,
+  IconButton,
   LinearProgress,
   Pagination,
   Paper,
@@ -24,6 +26,7 @@ import {
 
 export const ListagemDeEmpregadores: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const { debounce } = useDebounce(1000);
 
   const [rows, setRows] = useState<IEmpregador[]>([]);
@@ -55,6 +58,21 @@ export const ListagemDeEmpregadores: React.FC = () => {
     });
   }, [search, page]);
 
+  const handleDelete = (id: number) => {
+    if (confirm('Realmente deseja apagar?')) {
+      EmpregadoresService.deleteById(id).then((result) => {
+        if (result instanceof Error) {
+          alert(result.message);
+        } else {
+          setRows((oldRows) => {
+            return [...oldRows.filter((oldRow) => oldRow.id != id)];
+          });
+          alert('Registro deletado!');
+        }
+      });
+    }
+  };
+
   return (
     <BaseLayout
       title='Listagem de Empregadores'
@@ -63,6 +81,7 @@ export const ListagemDeEmpregadores: React.FC = () => {
           showSearchInput
           newButtonText='Novo'
           searchText={search}
+          onNewButtonClick={() => navigate('/empregadores/detalhes/novo')}
           onSearchTextChange={(text) =>
             setSearchParams({ search: text, page: '1' }, { replace: true })
           }
@@ -89,7 +108,17 @@ export const ListagemDeEmpregadores: React.FC = () => {
           <TableBody>
             {rows.map((row) => (
               <TableRow key={row.id}>
-                <TableCell>Ações</TableCell>
+                <TableCell>
+                  <IconButton size='small' onClick={() => handleDelete(row.id)}>
+                    <Icon>delete</Icon>
+                  </IconButton>
+                  <IconButton
+                    size='small'
+                    onClick={() => navigate(`/empregadores/detalhes/${row.id}`)}
+                  >
+                    <Icon>edit</Icon>
+                  </IconButton>
+                </TableCell>
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.cnpj}</TableCell>
                 <TableCell>{row.employerType}</TableCell>
