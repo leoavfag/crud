@@ -12,16 +12,18 @@ export interface BalancePerDiscountPolicy {
 }
 
 export interface IEmpregador {
+  name: string;
+  cnpj: string;
+  phone: string;
+  employerType: 'COMPANY' | 'INDIVIDUAL';
+  hideEmployeeBalance: boolean;
   createdBy: string;
   createdDate: string;
   lastModifiedBy: string;
   lastModifiedDate: string;
   id: number;
-  name: string;
   topUpInvoiceFeePercentage: number;
   topUpInvoiceFeeAmountInCents: number;
-  cnpj: string;
-  phone: string;
   paymentArrangementId: number;
   paymentArrangementMnemonic: string;
   balance: number;
@@ -29,9 +31,7 @@ export interface IEmpregador {
   totalBalance: number;
   balancePerDiscountPolicy: BalancePerDiscountPolicy;
   createdByEntityType: string;
-  employerType: 'COMPANY' | 'INDIVIDUAL';
   incorporationDate: string;
-  hideEmployeeBalance: boolean;
   active: boolean;
   valid: boolean;
   discountPolicy?: string;
@@ -88,7 +88,29 @@ const create = async (
   dados: Omit<IEmpregador, 'id'>
 ): Promise<number | Error> => {
   try {
-    const { data } = await Api.post<IEmpregador>('/empregadores', dados);
+    const newData = {
+      ...dados,
+      createdBy: 'kuroki_evom',
+      createdDate: new Date().toISOString(),
+      lastModifiedBy: 'kuroki_evom',
+      lastModifiedDate: new Date().toISOString(),
+      topUpInvoiceFeePercentage: 0.0,
+      topUpInvoiceFeeAmountInCents: 0.0,
+      paymentArrangementId: 1,
+      paymentArrangementMnemonic: 'EvomPass',
+      balance: 0,
+      walletsBalance: 0,
+      totalBalance: 0,
+      balancePerDiscountPolicy: {
+        NO_DISCOUNT: { amount: 0, discountPolicyLabel: 'Sem desconto' },
+      },
+      createdByEntityType: 'PAYMENT_ARRANGEMENT',
+      incorporationDate: new Date().toISOString(),
+      active: true,
+      valid: true,
+      enableDetachedInvoicePayment: false,
+    };
+    const { data } = await Api.post<IEmpregador>('/empregadores', newData);
 
     if (data) {
       return data.id;
