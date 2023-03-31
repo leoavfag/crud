@@ -1,4 +1,4 @@
-import { Box, LinearProgress, Paper } from '@mui/material';
+import { Box, Grid, LinearProgress, Paper, Typography } from '@mui/material';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import { useEffect, useRef, useState } from 'react';
@@ -111,15 +111,73 @@ export const DetalhesDeEmpregador: React.FC = () => {
           component={Paper}
           variant='outlined'
         >
-          <VTextField placeholder='Nome do empregador' name='name' />
-          <VTextField placeholder='CNPJ' name='cnpj' />
-          <VTextField placeholder='Telefone' name='phone' />
-          <VTextField placeholder='Tipo de empregador' name='employerType' />
-          <VCheckbox
-            name='hideEmployeBalance'
-            value='hideEmployeBalance'
-            label='Esconder saldo do empregador?'
-          />
+          <Grid container direction='column' padding={2} spacing={2}>
+            {isLoading && (
+              <Grid item>
+                <LinearProgress variant='indeterminate' />
+              </Grid>
+            )}
+
+            <Grid item>
+              <Typography variant='h6'>Geral</Typography>
+            </Grid>
+
+            <Grid container item direction='row' spacing={2}>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
+                <VTextField
+                  fullWidth
+                  label='Nome do empregador'
+                  name='name'
+                  disabled={isLoading}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container item direction='row' spacing={2}>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
+                <VTextField
+                  fullWidth
+                  label='CNPJ'
+                  name='cnpj'
+                  disabled={isLoading}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container item direction='row' spacing={2}>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
+                <VTextField
+                  fullWidth
+                  label='Telefone'
+                  name='phone'
+                  disabled={isLoading}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container item direction='row' spacing={2}>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
+                <VTextField
+                  fullWidth
+                  label='Tipo de empregador'
+                  name='employerType'
+                  disabled={isLoading}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container item direction='row' spacing={2}>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
+                <VCheckbox
+                  name='hideEmployeBalance'
+                  value='hideEmployeBalance'
+                  label='Esconder saldo?'
+                  disabled={isLoading}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
         </Box>
       </Form>
     </BaseLayout>
