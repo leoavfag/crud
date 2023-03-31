@@ -64,24 +64,24 @@ export const DetailTool: React.FC<IDetailTool> = ({
       marginX={1}
       padding={1}
       paddingX={2}
-      display="flex"
-      alignItems="center"
+      display='flex'
+      alignItems='center'
       height={theme.spacing(5)}
       component={Paper}
     >
       {showSaveButton && !showSaveButtonLoading && (
         <Button
-          variant="contained"
-          color="primary"
+          variant='contained'
+          color='primary'
           disableElevation
           startIcon={<Icon>save</Icon>}
           onClick={onClickSave}
         >
           <Typography
-            variant="button"
-            whiteSpace="nowrap"
-            textOverflow="ellipsis"
-            overflow="hidden"
+            variant='button'
+            whiteSpace='nowrap'
+            textOverflow='ellipsis'
+            overflow='hidden'
           >
             Salvar
           </Typography>
@@ -95,17 +95,17 @@ export const DetailTool: React.FC<IDetailTool> = ({
         !smDown &&
         !mdDown && (
           <Button
-            variant="outlined"
-            color="primary"
+            variant='outlined'
+            color='primary'
             disableElevation
             startIcon={<Icon>save</Icon>}
             onClick={onClickSaveClose}
           >
             <Typography
-              variant="button"
-              whiteSpace="nowrap"
-              textOverflow="ellipsis"
-              overflow="hidden"
+              variant='button'
+              whiteSpace='nowrap'
+              textOverflow='ellipsis'
+              overflow='hidden'
             >
               Salvar e voltar
             </Typography>
@@ -118,17 +118,17 @@ export const DetailTool: React.FC<IDetailTool> = ({
 
       {showDeleteButton && !showDeleteButtonLoading && (
         <Button
-          variant="outlined"
-          color="primary"
+          variant='outlined'
+          color='primary'
           disableElevation
           startIcon={<Icon>delete</Icon>}
           onClick={onClickDelete}
         >
           <Typography
-            variant="button"
-            whiteSpace="nowrap"
-            textOverflow="ellipsis"
-            overflow="hidden"
+            variant='button'
+            whiteSpace='nowrap'
+            textOverflow='ellipsis'
+            overflow='hidden'
           >
             Apagar
           </Typography>
@@ -139,17 +139,17 @@ export const DetailTool: React.FC<IDetailTool> = ({
 
       {showNewButton && !showNewButtonLoading && !smDown && (
         <Button
-          variant="outlined"
-          color="primary"
+          variant='outlined'
+          color='primary'
           disableElevation
           startIcon={<Icon>add</Icon>}
           onClick={onClickNew}
         >
           <Typography
-            variant="button"
-            whiteSpace="nowrap"
-            textOverflow="ellipsis"
-            overflow="hidden"
+            variant='button'
+            whiteSpace='nowrap'
+            textOverflow='ellipsis'
+            overflow='hidden'
           >
             {newButtonText}
           </Typography>
@@ -163,22 +163,22 @@ export const DetailTool: React.FC<IDetailTool> = ({
           showDeleteButton ||
           showSaveButton ||
           showSaveCloseButton) && (
-          <Divider variant="middle" orientation="vertical" />
+          <Divider variant='middle' orientation='vertical' />
         )}
 
       {showBackButton && !showBackButtonLoading && (
         <Button
-          variant="outlined"
-          color="primary"
+          variant='outlined'
+          color='primary'
           disableElevation
           startIcon={<Icon>arrow_back</Icon>}
           onClick={onClickBack}
         >
           <Typography
-            variant="button"
-            whiteSpace="nowrap"
-            textOverflow="ellipsis"
-            overflow="hidden"
+            variant='button'
+            whiteSpace='nowrap'
+            textOverflow='ellipsis'
+            overflow='hidden'
           >
             Voltar
           </Typography>

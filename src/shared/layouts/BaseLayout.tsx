@@ -11,7 +11,7 @@ import { useDrawerContext } from '../contexts';
 
 interface IBaseLayoutProps {
   title: string;
-  toolbar: ReactNode;
+  toolbar?: ReactNode;
   children?: ReactNode;
 }
 

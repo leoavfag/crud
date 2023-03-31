@@ -1,10 +1,8 @@
 import { Box, Grid, LinearProgress, Paper, Typography } from '@mui/material';
-import { FormHandles } from '@unform/core';
-import { Form } from '@unform/web';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DetailTool } from '../../shared/components';
-import { VCheckbox, VTextField } from '../../shared/forms';
+import { VCheckbox, VTextField, VForm, useVForm } from '../../shared/forms';
 import { BaseLayout } from '../../shared/layouts';
 import {
   EmpregadoresService,
@@ -16,8 +14,7 @@ type IFormData = Omit<IEmpregador, 'id'>;
 export const DetalhesDeEmpregador: React.FC = () => {
   const { id = 'novo' } = useParams<'id'>();
   const navigate = useNavigate();
-
-  const formRef = useRef<FormHandles>(null);
+  const { formRef, save, saveAndClose, isSaveAndClose } = useVForm();
 
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState('');
@@ -38,8 +35,16 @@ export const DetalhesDeEmpregador: React.FC = () => {
           formRef.current?.setData(result);
         }
       });
+    } else {
+      formRef.current?.setData({
+        name: '',
+        cnpj: '',
+        phone: '',
+        employerType: '',
+        hideEmployeeBalance: false,
+      });
     }
-  }, []);
+  }, [id]);
 
   const handleSave = (data: IFormData) => {
     setIsLoading(true);
@@ -51,7 +56,11 @@ export const DetalhesDeEmpregador: React.FC = () => {
         if (result instanceof Error) {
           alert(result.message);
         } else {
-          navigate(`/empregadores/detalhes/${result}`);
+          if (isSaveAndClose()) {
+            navigate('/empregadores');
+          } else {
+            navigate(`/empregadores/detalhes/${result}`);
+          }
         }
       });
     } else {
@@ -66,6 +75,10 @@ export const DetalhesDeEmpregador: React.FC = () => {
 
         if (result instanceof Error) {
           alert(result.message);
+        } else {
+          if (isSaveAndClose()) {
+            navigate('/empregadores');
+          }
         }
       });
     }
@@ -95,15 +108,13 @@ export const DetalhesDeEmpregador: React.FC = () => {
           showSaveCloseButton
           onClickBack={() => navigate('/empregadores')}
           onClickDelete={() => handleDelete(Number(id))}
-          onClickNew={() => navigate('/empregadores/novo')}
-          onClickSave={() => formRef.current?.submitForm()}
-          onClickSaveClose={() => formRef.current?.submitForm()}
+          onClickNew={() => navigate('/empregadores/detalhes/novo')}
+          onClickSave={save}
+          onClickSaveClose={saveAndClose}
         />
       }
     >
-      {/* {isLoading && <LinearProgress variant='indeterminate' />}
-      <p>Detalhes {id}</p> */}
-      <Form ref={formRef} onSubmit={handleSave}>
+      <VForm ref={formRef} onSubmit={handleSave}>
         <Box
           margin={1}
           display='flex'
@@ -171,7 +182,7 @@ export const DetalhesDeEmpregador: React.FC = () => {
               <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
                 <VCheckbox
                   name='hideEmployeBalance'
-                  value='hideEmployeBalance'
+                  value='hideEmployeeBalance'
                   label='Esconder saldo?'
                   disabled={isLoading}
                 />
@@ -179,7 +190,7 @@ export const DetalhesDeEmpregador: React.FC = () => {
             </Grid>
           </Grid>
         </Box>
-      </Form>
+      </VForm>
     </BaseLayout>
   );
 };
