@@ -1,42 +1,22 @@
 import { Environment } from '../../../environment';
 import { Api } from '../axios-config';
 
-export interface Financial {
-  amount: number;
-  discountPolicy?: string;
-  discountPolicyLabel: string;
-}
-
-export interface BalancePerDiscountPolicy {
-  [key: string]: Financial;
-}
+export type EmployerType = 'COMPANY' | 'INDIVIDUAL';
 
 export interface IEmpregador {
-  name: string;
+  active: boolean;
+  balance: number;
   cnpj: string;
-  phone: string;
-  employerType: 'COMPANY' | 'INDIVIDUAL';
-  hideEmployeeBalance: boolean;
   createdBy: string;
   createdDate: string;
+  employerType: EmployerType;
+  hideEmployeeBalance: boolean;
+  id: number;
+  incorporationDate: string;
   lastModifiedBy: string;
   lastModifiedDate: string;
-  id: number;
-  topUpInvoiceFeePercentage: number;
-  topUpInvoiceFeeAmountInCents: number;
-  paymentArrangementId: number;
-  paymentArrangementMnemonic: string;
-  balance: number;
-  walletsBalance: number;
-  totalBalance: number;
-  balancePerDiscountPolicy: BalancePerDiscountPolicy;
-  createdByEntityType: string;
-  incorporationDate: string;
-  active: boolean;
-  valid: boolean;
-  discountPolicy?: string;
-  discountPolicyLabel?: string;
-  enableDetachedInvoicePayment?: boolean;
+  name: string;
+  phone: string;
 }
 
 type IEmpregadoresWithTotalCount = {
@@ -94,21 +74,9 @@ const create = async (
       createdDate: new Date().toISOString(),
       lastModifiedBy: 'kuroki_evom',
       lastModifiedDate: new Date().toISOString(),
-      topUpInvoiceFeePercentage: 0.0,
-      topUpInvoiceFeeAmountInCents: 0.0,
-      paymentArrangementId: 1,
-      paymentArrangementMnemonic: 'EvomPass',
       balance: 0,
-      walletsBalance: 0,
-      totalBalance: 0,
-      balancePerDiscountPolicy: {
-        NO_DISCOUNT: { amount: 0, discountPolicyLabel: 'Sem desconto' },
-      },
-      createdByEntityType: 'PAYMENT_ARRANGEMENT',
       incorporationDate: new Date().toISOString(),
       active: true,
-      valid: true,
-      enableDetachedInvoicePayment: false,
     };
     const { data } = await Api.post<IEmpregador>('/empregadores', newData);
 
