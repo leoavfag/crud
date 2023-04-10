@@ -96,11 +96,10 @@ export const ListagemDeEmpregadores: React.FC = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Ações</TableCell>
+              <TableCell width={100}>Ações</TableCell>
               <TableCell>Nome</TableCell>
               <TableCell>CNPJ</TableCell>
               <TableCell>Tipo</TableCell>
-              <TableCell>Arranjo de pagamento</TableCell>
               <TableCell>Total na Carteira</TableCell>
               <TableCell>Ativo</TableCell>
             </TableRow>
@@ -122,8 +121,7 @@ export const ListagemDeEmpregadores: React.FC = () => {
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.cnpj}</TableCell>
                 <TableCell>{row.employerType}</TableCell>
-                <TableCell>{row.paymentArrangementMnemonic}</TableCell>
-                <TableCell>{row.totalBalance}</TableCell>
+                <TableCell>{row.balance}</TableCell>
                 <TableCell>{row.active ? 'Sim' : 'Nâo'}</TableCell>
               </TableRow>
             ))}

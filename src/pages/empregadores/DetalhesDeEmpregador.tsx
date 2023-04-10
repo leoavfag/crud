@@ -1,15 +1,71 @@
 import { Box, Grid, LinearProgress, Paper, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import * as yup from 'yup';
+import { cpf, cnpj } from 'cpf-cnpj-validator';
+
 import { DetailTool } from '../../shared/components';
-import { VCheckbox, VTextField, VForm, useVForm } from '../../shared/forms';
+import {
+  VCheckbox,
+  VTextField,
+  VForm,
+  useVForm,
+  IVFormErrors,
+} from '../../shared/forms';
 import { BaseLayout } from '../../shared/layouts';
 import {
   EmpregadoresService,
   IEmpregador,
+  EmployerType,
 } from '../../shared/services/api/empregadores/EmpregadoresService';
 
-type IFormData = Omit<IEmpregador, 'id'>;
+type LabelValuePair = {
+  label: string;
+  value: string;
+};
+
+/**
+ * Function createLabelValueArray explanation
+ *
+ * T extends Array<LabelValuePair> restricts the generic type T to our LabelValuePair type
+ *
+ * Array<{value: V}> extracts another type V from the LabelValuePair inside the array
+ *
+ * V extends string actually prevents the compiler from widening our string literals to the string type.
+ *
+ */
+function createLabelValueArray<
+  T extends Array<LabelValuePair> & Array<{ value: V }>,
+  V extends string
+>(...args: T) {
+  return args;
+}
+
+const selectTypes = createLabelValueArray(
+  { label: 'Company', value: 'COMPANY' },
+  { label: 'Individual', value: 'INDIVIDUAL' }
+);
+
+type SelectType = typeof selectTypes[number]['value'];
+
+interface IFormData {
+  cnpj: string;
+  employerType: EmployerType;
+  hideEmployeeBalance: boolean;
+  name: string;
+  phone: string;
+}
+
+const formValidationSchema: yup.Schema<IFormData> = yup.object().shape({
+  name: yup.string().required().min(3),
+  cnpj: yup.string().required('CNPJ ou CPF obrigatórios'), //cpf.isValid(value) || cnpj.isValid(value)),
+  phone: yup.string().required(),
+  hideEmployeeBalance: yup.boolean().required(),
+  employerType: yup
+    .mixed<SelectType>()
+    .oneOf(selectTypes.map((lv) => lv.value))
+    .required(),
+});
 
 export const DetalhesDeEmpregador: React.FC = () => {
   const { id = 'novo' } = useParams<'id'>();
@@ -18,7 +74,9 @@ export const DetalhesDeEmpregador: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState('');
-  const [empregadorData, setempregadorData] = useState({});
+  const [empregadorData, setempregadorData] = useState<IEmpregador | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     if (id !== 'novo') {
@@ -47,41 +105,67 @@ export const DetalhesDeEmpregador: React.FC = () => {
   }, [id]);
 
   const handleSave = (data: IFormData) => {
-    setIsLoading(true);
+    formValidationSchema
+      .validate(data, { abortEarly: false })
+      .then((validateData) => {
+        if (id === 'novo') {
+          const createData = {
+            ...validateData,
+            createdBy: 'kuroki_evom',
+            createdDate: new Date().toISOString(),
+            lastModifiedBy: 'kuroki_evom',
+            lastModifiedDate: new Date().toISOString(),
+            balance: 0,
+            incorporationDate: new Date().toISOString(),
+            active: true,
+          };
 
-    if (id === 'novo') {
-      EmpregadoresService.create(data).then((result) => {
-        setIsLoading(false);
+          EmpregadoresService.create(createData).then((result) => {
+            setIsLoading(false);
 
-        if (result instanceof Error) {
-          alert(result.message);
+            if (result instanceof Error) {
+              alert(result.message);
+            } else {
+              if (isSaveAndClose()) {
+                navigate('/empregadores');
+              } else {
+                navigate(`/empregadores/detalhes/${result}`);
+              }
+            }
+          });
         } else {
-          if (isSaveAndClose()) {
-            navigate('/empregadores');
-          } else {
-            navigate(`/empregadores/detalhes/${result}`);
+          if (empregadorData) {
+            EmpregadoresService.updateById(Number(id), {
+              ...empregadorData,
+              ...validateData,
+              lastModifiedBy: 'kuroki_evom',
+              lastModifiedDate: new Date().toISOString(),
+              id: Number(id),
+            }).then((result) => {
+              setIsLoading(false);
+
+              if (result instanceof Error) {
+                alert(result.message);
+              } else {
+                if (isSaveAndClose()) {
+                  navigate('/empregadores');
+                }
+              }
+            });
           }
         }
-      });
-    } else {
-      EmpregadoresService.updateById(Number(id), {
-        ...empregadorData,
-        ...data,
-        lastModifiedBy: 'kuroki_evom',
-        lastModifiedDate: new Date().toISOString(),
-        id: Number(id),
-      }).then((result) => {
-        setIsLoading(false);
+        setIsLoading(true);
+      })
+      .catch((errors: yup.ValidationError) => {
+        const validationErrors: IVFormErrors = {};
 
-        if (result instanceof Error) {
-          alert(result.message);
-        } else {
-          if (isSaveAndClose()) {
-            navigate('/empregadores');
-          }
-        }
+        errors.inner.forEach((error) => {
+          if (!error.path) return;
+
+          validationErrors[error.path] = error.message;
+        });
+        formRef.current?.setErrors(validationErrors);
       });
-    }
   };
 
   const handleDelete = (id: number) => {
